@@ -15,7 +15,7 @@ today = format(Sys.Date(), "%y%m%d")
 
 # data -------------------------------------------------------------------------
 
-df  = fread(here("clean/cohort_bmt.csv"))
+df  = fread(here("clean/cohort_bmt_250721.csv"))
 adt = read_parquet(here("clean/adt.parquet")) 
 edi = read_parquet(here("clean", "epic_scores.parquet"))
 vs  = read_parquet(here("../000_data/ohsu/clean/vs_dynam_ohsu_240126.parquet"))
