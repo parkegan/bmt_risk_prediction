@@ -9,7 +9,7 @@ library(here)
 
 # load  scores -----------------------------------------------------------------
 
-bmt_mrns <- fread(here("clean", "cohort_bmt.csv")) |> fselect(mrn) |> funique()
+bmt_mrns <- fread(here("clean", "cohort_bmt_250721.csv")) |> fselect(mrn) |> funique()
 
 
 df <-
