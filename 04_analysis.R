@@ -1,5 +1,7 @@
 
-# Hospitalization-level analysis for BMT cohort poster/manuscript
+# Analysis, figures, and tables for BMT cohort analysis
+
+# Analysis includes both hospitalization-level and time series logistic regression
 
 # ------------------------------------------------------------------------------
 
@@ -165,10 +167,10 @@ df_lead |>
   collapse::fselect(-mrn, -enc) |>
   gtsummary::tbl_summary() 
 
-# make tables and figures
-# --------------------------------------------------------------------------
+# make tables and figures -----------------------------------------------------
 
-# table
+# table 1
+
 table_1 <-
   df |>
   collapse::fselect(
@@ -219,6 +221,8 @@ df2 <-
   ftransform(outcome_f = factor(outcome, labels = olabs))
 
 ## plot individual histograms
+
+# SIRS
 hs <- 
   ggplot(df2, aes(x = sirs, fill = outcome_f)) +
   geom_histogram(binwidth = 1L, color = "black", position = "identity") +
@@ -232,6 +236,7 @@ hs <-
   ) +
   theme(legend.position = "none")
 
+# qSOFA
 hq <- 
   ggplot(df2, aes(x = qsofa, fill = outcome_f)) +
   geom_histogram(binwidth = 1L, color = "black", position = "identity") +
@@ -245,6 +250,7 @@ hq <-
   ) +
   theme(legend.position = "none")
 
+# MEWS
 hm <- 
   ggplot(df2, aes(x = mews, fill = outcome_f)) +
   geom_histogram(binwidth = 1L, color = "black", position = "identity") +
@@ -259,6 +265,7 @@ hm <-
   ) +
   theme(legend.position = "none")
 
+# NEWS
 hn <- 
   ggplot(df2, aes(x = news, fill = outcome_f)) +
   geom_histogram(binwidth = 1L, color = "black", position = "identity") +
@@ -273,6 +280,7 @@ hn <-
   ) +
   theme(legend.position = "none")
 
+# EDI
 he <- 
   ggplot(df2, aes(x = edi, fill = outcome_f)) +
   geom_histogram(binwidth = 2.5, color = "black", position = "identity") +
@@ -448,6 +456,8 @@ ggsave(here("figs", "figure_combined.jpg"), height = 10, width = 6, units = "in"
 
 # Visual abstract figures ------------------------------------------------------
 
+# Hospitalization-level discrimination of each predictor
+
 q = ci.auc(roc(df2$outcome, df2$qsofa), method = "bootstrap")
 s = ci.auc(roc(df2$outcome, df2$sirs),  method = "bootstrap")
 m = ci.auc(roc(df2$outcome, df2$mews),  method = "bootstrap")
@@ -480,6 +490,7 @@ f2a =
 
 f2a
 
+# SIRS
 ts <-
   probably::threshold_perf(
     .data       = df2,
@@ -491,6 +502,7 @@ ts <-
   ) |>
   ftransform(score = "sirs")
 
+# qSOFA
 tq <-
   probably::threshold_perf(
     .data       = df2,
@@ -502,6 +514,7 @@ tq <-
   ) |>
   ftransform(score = "qsofa")
 
+# MEWS
 tm <-
   probably::threshold_perf(
     .data       = df2,
@@ -513,6 +526,7 @@ tm <-
   ) |>
   ftransform(score = "mews")
 
+# NEWS
 tn <-
   probably::threshold_perf(
     .data       = df2,
@@ -524,6 +538,7 @@ tn <-
   ) |>
   ftransform(score = "news")
 
+# EDI
 te <-
   probably::threshold_perf(
     .data       = df2,
@@ -535,6 +550,7 @@ te <-
   ) |>
   ftransform(score = "edi")
 
+# Compile them into one figure
 thresh <-
   ts |>
   bind_rows(tq) |>
