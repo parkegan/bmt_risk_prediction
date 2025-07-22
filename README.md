@@ -9,11 +9,11 @@ All hospitalizations of hematopoietic stem cell transplants are included in the 
 
 ## Scripts
 
-01_cohort applies inclusion/exclusion criteria to the BMT patient cohort
+*01_cohort* applies inclusion/exclusion criteria to the BMT patient cohort
 
-02_scores cleans EDI data extracted from the EHR
+*02_scores* cleans EDI data extracted from the EHR
 
-03_data_prep utilizes vitals, labs, respiratory criteria, and patient assessments from the EHR to calculate SIRS, MEWS, NEWS, and qSOFA continuously throughout cohort hospitalizations. Using admission-discharge-transfer data, determines the patient outcomes of ICU transfer, and/or death on wards or transfer to hospice. 
+*03_data_prep* utilizes vitals, labs, respiratory criteria, and patient assessments from the EHR to calculate SIRS, MEWS, NEWS, and qSOFA continuously throughout cohort hospitalizations. Using admission-discharge-transfer data, determines the patient outcomes of ICU transfer, and/or death on wards or transfer to hospice. 
 
-04_analysis performs hospitalization level and time series logistic regression for each triage score, and creates final tables and figures. 
+*04_analysis* performs hospitalization level and time series logistic regression for each triage score, and creates final tables and figures. 
 
