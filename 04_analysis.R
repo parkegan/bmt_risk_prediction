@@ -52,8 +52,18 @@ ts_df <-
 
 cohort_outcomes <-
   df |>
-  select(mrn, enc, age_yrs, female_01, auto_01, outcome_01, dead_01, hospice_01, 
-         wicutx_01, hct_01, starts_with("min"), starts_with("max")) |>
+  select(mrn, 
+         enc, 
+         age_yrs, 
+         female_01, 
+         auto_01, 
+         outcome_01, 
+         dead_01, 
+         hospice_01, 
+         wicutx_01, 
+         hct_01, 
+         starts_with("min"), 
+         starts_with("max")) |>
   funique()
 
 cohort_outcomes |>
@@ -79,7 +89,7 @@ icu_ever <-
 
 
 # For people who were seen in the ICU, their time of event is the first
-# Ward-ICU admission. Censor any SOI metrics after that point.
+# Ward-ICU admission. Any SOI metrics after that point are censored.
 
 df <- 
   df |>
@@ -113,10 +123,10 @@ inc_df <-
 never_alarm <-
   inc_df |>
   filter(outcome_01 == 1 &
-           max_edi < 37.4 &
+           max_edi   < 37.4 &
            max_qsofa < 2 &
-           max_mews < 5 &
-           max_news < 7) |>
+           max_mews  < 5 &
+           max_news  < 7) |>
   fselect(mrn, enc, t_adt, t_outcome, wicutx_01, outcome_01, max_edi, 
           max_sirs, max_qsofa, max_mews, max_news) |>
   funique()
@@ -143,24 +153,30 @@ inc_df |>
 df_lead <-
   df |>
   filter(outcome_01 == 1) |>
-  ftransform(sirs_lead = case_when(sirs >= 2 ~ as.double(difftime(t_outcome, time, units = "days")),
-                                   TRUE      ~ NA_real_),
+  ftransform(sirs_lead = case_when(sirs >= 2   ~ as.double(difftime(t_outcome, time, units = "days")),
+                                   TRUE        ~ NA_real_),
              qsofa_lead = case_when(qsofa >= 2 ~ as.double(difftime(t_outcome, time, units = "days")),
-                                    TRUE      ~ NA_real_),
-             mews_lead = case_when(mews >= 5 ~ as.double(difftime(t_outcome, time, units = "days")),
-                                   TRUE      ~ NA_real_),
-             news_lead = case_when(news >= 7 ~ as.double(difftime(t_outcome, time, units = "days")),
-                                   TRUE      ~ NA_real_),
-             edi_lead = case_when(edi >= 37.4 ~ as.double(difftime(t_outcome, time, units = "days")),
-                                  TRUE      ~ NA_real_)) |>
+                                    TRUE       ~ NA_real_),
+             mews_lead = case_when(mews >= 5   ~ as.double(difftime(t_outcome, time, units = "days")),
+                                   TRUE        ~ NA_real_),
+             news_lead = case_when(news >= 7   ~ as.double(difftime(t_outcome, time, units = "days")),
+                                   TRUE        ~ NA_real_),
+             edi_lead = case_when(edi >= 37.4  ~ as.double(difftime(t_outcome, time, units = "days")),
+                                  TRUE         ~ NA_real_)) |>
   group_by(mrn, enc) |>
-  mutate(sirs_lead = fmax(sirs_lead),
+  mutate(sirs_lead  = fmax(sirs_lead),
          qsofa_lead = fmax(qsofa_lead),
-         mews_lead = fmax(mews_lead),
-         news_lead = fmax(news_lead),
-         edi_lead = fmax(edi_lead)) |>
+         mews_lead  = fmax(mews_lead),
+         news_lead  = fmax(news_lead),
+         edi_lead   = fmax(edi_lead)) |>
   ungroup() |>
-  fselect(mrn, enc, sirs_lead, qsofa_lead, mews_lead, news_lead, edi_lead) |>
+  fselect(mrn, 
+          enc, 
+          sirs_lead, 
+          qsofa_lead, 
+          mews_lead, 
+          news_lead, 
+          edi_lead) |>
   funique()
 
 df_lead |>
@@ -319,8 +335,8 @@ ggsave(
 rm(hs, hq, hm, hn, he)
 
 # time to positivity by each score ---------------------------------------------
-
 # requires 4h discrete time blocks for ease of curve plotting
+
 df4 <-
   df |>
   collapse::fmutate(
