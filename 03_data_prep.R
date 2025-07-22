@@ -38,6 +38,7 @@ short <-
   ) |>
   select(mrn, enc, day, drop, loc_cat)
 
+# Identify ICU transfers
 adt <- 
   adt |>
   ftransform(day  = lubridate::date(time)) |>
@@ -52,6 +53,7 @@ adt <-
     .by      = enc
   ) 
 
+# Identify first transfer to wards
 t_ward = 
   fsubset(adt, loc_cat == "Wards") |> 
   fgroup_by(enc) |> 
@@ -61,11 +63,13 @@ t_ward =
     t_ward = fmin(time)
   )
 
+# Identify first transfer to ICU
 t_icutx = 
   fsubset(adt, w_icu_tx == 1) |>
   fgroup_by(enc) |>
   fsummarize(t_icutx = fmin(time))
 
+# Encounter characteristics and outcomes
 df <-
   df |>
   ftransform(
@@ -90,6 +94,7 @@ rm(adt, t_ward, t_icutx)
 
 # score parameters -------------------------------------------------------------
 
+# Relevant vital signs
 vs <-
   vs |>
   join(
@@ -105,6 +110,7 @@ vs <-
   ) |>
   select(enc, time, hr, rr, sbp, spo2, tmp)
 
+# Mental status
 ms <-
   ms |>
   join(
@@ -125,6 +131,7 @@ ms <-
   ) |>
   fselect(enc, time, gcs)
 
+# Respiratory support (any o2 support)
 ox <-
   ox |>
   fselect(-enc) |>
@@ -139,6 +146,7 @@ ox <-
   ftransform(o2_01 = 1L) |>
   fselect(enc, time, o2_01)
 
+# Labs: WBC, ph_venous, ph_arterial
 lab <-
   lab |>
   fselect(-enc, -order_dttm) |>
@@ -171,6 +179,7 @@ lab <-
     ph_art = as.numeric(ph_art)
   )
 
+# Full dataframe
 soi <-
   vs |> 
   join(ms,  how = "full", multiple = T) |>
