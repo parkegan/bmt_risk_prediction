@@ -54,6 +54,7 @@ adt <-
 adt |> fsubset(is.na(mintime_wards) & is.na(mintime_icu)) # no problems!
 
 # subset the BMT patients ------------------------------------------------------
+
 df <-
   fread(here("../009_bmt_riskprediction/pre/bmt_chart_review.csv")) |>
   fselect(mrn, date_of_hct, donor_type) |>
